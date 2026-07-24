@@ -8695,8 +8695,9 @@ function clusterIcon(n,bg){
     html:`<div class="numpin cluster" style="width:${s}px;height:${s}px;font-size:${Math.max(12,Math.round(s*0.4))}px;background:${bg}">${n}</div>`});
 }
 function initMap(){
-  map=L.map("map",{scrollWheelZoom:true,worldCopyJump:true,zoomControl:true,
+  map=L.map("map",{scrollWheelZoom:true,worldCopyJump:true,zoomControl:false,
     attributionControl:false,minZoom:2}).setView([22,75],3);
+  L.control.zoom({position:"bottomright"}).addTo(map);   // keep top-left free for the view switcher
   // minimal flat country base: country fills + borders only (no tiles, labels or subdivisions)
   map.createPane("basemap"); map.getPane("basemap").style.zIndex=200;
   // countries present in the dataset are clickable: they list their cooperation and zoom in
