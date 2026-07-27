@@ -8697,10 +8697,12 @@ function initMap(){
   layer=L.layerGroup().addTo(map);
   map.on("click",()=>{state.sel=null;refresh();});
   map.on("zoomend",()=>{
-    // back at the country-totals view: drop stale detail selections so the
-    // panel only shows when something is clicked at this level
-    if(map.getZoom()<=COUNTRY_ZOOM&&state.sel&&
-       state.sel.kind!=="countryV4"&&state.sel.kind!=="countryA")state.sel=null;
+    // back at the country-totals view: close the panel entirely (a freshly
+    // clicked country gets a short grace period while the map is still flying)
+    if(map.getZoom()<=COUNTRY_ZOOM&&state.sel){
+      const isCountry=state.sel.kind==="countryV4"||state.sel.kind==="countryA";
+      if(!isCountry||Date.now()-lastCountryClick>1500)state.sel=null;
+    }
     drawMap(filteredUnis());renderPanel();});   // re-cluster / re-fan at new zoom
   const eu=D.universities.filter(u=>u.lat!=null).map(u=>[u.lat,u.lng]);
   const sea=D.partners.filter(p=>p.lat!=null).map(p=>[p.lat,p.lng]);
@@ -8708,7 +8710,9 @@ function initMap(){
 }
 function expandTo(lat,lng){map.flyTo([lat,lng],Math.max(EXPAND_ZOOM,map.getZoom()+2));}
 // click on a country shape: select it (panel lists its cooperation) and zoom to it
+let lastCountryClick=0;
 function countryClick(name){
+  lastCountryClick=Date.now();
   let pts;
   if(V4_SET.has(name)){
     state.sel={kind:"countryV4",name};
