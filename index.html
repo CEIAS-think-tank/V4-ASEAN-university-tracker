@@ -8828,7 +8828,14 @@ function selDims(){
 /* ---- side panel ---- */
 function renderPanel(){
   const panel=document.getElementById("sidepanel"), el=document.getElementById("info");
-  if(!state.sel){panel.classList.remove("open");return;}
+  // never show an open-but-empty panel: close unless the selection resolves to real data
+  const selOk=s=>!s?false
+    :s.kind==="uni"?!!uniByName[s.key]
+    :s.kind==="partner"?!!partnerIndex[s.key]
+    :s.kind==="clusterU"?s.names&&s.names.some(n=>uniByName[n])
+    :s.kind==="clusterP"?s.keys&&s.keys.some(k=>partnerIndex[k])
+    :s.kind==="countryV4"||s.kind==="countryA"?!!s.name:false;
+  if(!selOk(state.sel)){state.sel=null;el.innerHTML="";panel.classList.remove("open");return;}
   panel.classList.add("open");
   if(state.sel.kind==="countryV4"){
     const us=D.universities.filter(u=>u.country===state.sel.name&&partnersOf(u.name).length>0)
