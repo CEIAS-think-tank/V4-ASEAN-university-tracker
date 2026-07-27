@@ -676,7 +676,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
     --bg:#f6f1e4; --card:#fff; --ink:#2c2417; --muted:#857a63; --line:#e7ddc6;
   }
   *{box-sizing:border-box}
-  html,body{margin:0}
+  html,body{margin:0;overflow-x:hidden}
   body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink)}
   a{color:var(--brand)}
 
@@ -726,7 +726,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
     cursor:pointer;display:flex;align-items:center;gap:6px}
 
   /* ---- map area (dominant) ---- */
-  .maparea{position:relative;height:calc(100vh - 74px);min-height:520px}
+  /* overflow:hidden clips the slid-out side panel so it can never appear as a
+     white strip past the right edge of the page */
+  .maparea{position:relative;height:calc(100vh - 74px);min-height:520px;overflow:hidden}
   .maparea:last-child{height:calc(100vh - 74px)}
   #map{position:absolute;inset:0;z-index:0;background:#eaf0f1}
   .switchview{position:absolute;top:14px;left:14px;z-index:600;background:#fff;border:1px solid var(--line);
